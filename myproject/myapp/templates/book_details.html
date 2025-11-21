@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/book_details.css' %}">
+    <title>{{ book.title }}</title>
+ 
+       
+</head>
+<body>
+    <div class="navbar">
+        <h1>📚 Book Details</h1>
+        <div class="nav-links">
+            <a href="/books">Back to Books</a>
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="book-header">
+            <h2>{{ book.title }}</h2>
+            <p class="uploaded-by">Uploaded by: {{ book.uploaded_by.first_name }} {{ book.uploaded_by.last_name }}</p>
+        </div>
+        
+        <div class="book-description">
+            <strong>Description:</strong><br><br>
+            {{ book.desc }}
+        </div>
+        
+        <h3 class="section-title">Users who favorited this book:</h3>
+        
+        {% if book.users_who_like.all %}
+            <div class="users-list">
+                {% for liked_user in book.users_who_like.all %}
+                    <span class="user-tag">{{ liked_user.first_name }} {{ liked_user.last_name }}</span>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <p>No one has favorited this book yet.</p>
+            </div>
+        {% endif %}
+        
+        <h3 class="section-title">Actions:</h3>
+        
+        <div class="actions">
+            <!-- Favorite/Unfavorite buttons -->
+            {% if user in book.users_who_like.all %}
+                <a href="/books/{{ book.id }}/unfavorite" class="btn btn-warning">Un-favorite</a>
+            {% else %}
+                <a href="/books/{{ book.id }}/favorite" class="btn btn-success">Add to Favorites</a>
+            {% endif %}
+            
+            <!-- Edit/Delete buttons (only for uploader) -->
+            {% if book.uploaded_by.id == user.id %}
+                <a href="/books/{{ book.id }}/edit" class="btn btn-primary">Edit Book</a>
+                <a href="/books/{{ book.id }}/delete" class="btn btn-danger" 
+                   onclick="return confirm('Are you sure you want to delete this book?')">Delete Book</a>
+            {% endif %}
+            
+            <a href="/books" class="btn btn-secondary">Back to All Books</a>
+        </div>
+    </div>
+</body>
+</html>

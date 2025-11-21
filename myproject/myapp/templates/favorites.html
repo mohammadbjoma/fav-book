@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head> {% load static %}
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="stylesheet" href="{% static 'css/favorites.css' %}">
+    <title>My Favorite Books</title>
+  
+</head>
+<body>
+    <div class="navbar">
+        <h1>❤️ My Favorite Books</h1>
+        <div class="nav-links">
+            <a href="/books">All Books</a>
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>{{ user.first_name }}'s Favorite Books</h2>
+        
+        {% if user.liked_books.all %}
+            <div class="stats">
+                <h3>{{ user.liked_books.count }}</h3>
+                <p>Book{% if user.liked_books.count != 1 %}s{% endif %} in your collection</p>
+            </div>
+            
+            <div class="favorites-grid">
+                {% for book in user.liked_books.all %}
+                    <div class="book-card">
+                        <h3><a href="/books/{{ book.id }}">{{ book.title }}</a></h3>
+                        <p class="uploader">By: {{ book.uploaded_by.first_name }} {{ book.uploaded_by.last_name }}</p>
+                        <p class="description">{{ book.desc }}</p>
+                        <div class="actions">
+                            <a href="/books/{{ book.id }}" class="btn btn-view">View Details</a>
+                            <a href="/books/{{ book.id }}/unfavorite" class="btn btn-unfavorite">Remove</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <h3>📚</h3>
+                <p>You haven't favorited any books yet.</p>
+                <p>Start building your collection by exploring books!</p>
+                <a href="/books">Browse All Books</a>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
